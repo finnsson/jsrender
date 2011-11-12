@@ -279,6 +279,7 @@ $.extend({
 			
 			content = content && view.tmpl.nested[ content - 1 ];
 			presenter.tmpl = presenter.tmpl || content;
+            presenter.content = content;
 			tagFn = tagFn || viewsNs.tags.each;
 			ret = tagFn && (tagFn.apply( presenter, slice.call( arguments, 5 )));
 			return ret || (ret === undefined ? "" : ret.toString());
