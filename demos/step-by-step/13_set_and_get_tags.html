@@ -1,104 +1,98 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<script src="../../jsrender.js" type="text/javascript"></script>
-	<link href="../resources/demos.css" rel="stylesheet" type="text/css" />
+    <script src="../../jsrender.js" type="text/javascript"></script>
+    <link href="../resources/demos.css" rel="stylesheet" type="text/css"/>
 
-	<link href="../resources/movielist.css" rel="stylesheet" type="text/css" />
+    <link href="../resources/movielist.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<a href="index.html">Home</a><br />
+<a href="index.html">Home</a><br/>
 
 <h3>{{get}} and {{set}}</h3>
 
-<td>{{for Languages tmpl="languageTemplate"}}</td>
-        
 
 <script id="movieTemplate" type="text/x-jquery-tmpl">
-	<tr>
-		<td>{{=Title}}</td>
+    <tr>
+        <td>{{=Title}}</td>
         <td>{{for Languages tmpl="languageTemplate"}}</td>
         <td>
             {{#for Languages tmpl="languageTemplate"}}
                 {{#set title}}
-                    <span>{{=Name}}</span>
+                <span>Lingua: <b>{{=Name}}</b></span>
                 {{/set}}
             {{/for}}
         </td>
-		
-	</tr>
+
+    </tr>
 </script>
 
 <script id="languageTemplate" type="text/x-jquery-tmpl">
     <div>
-    {{#get title}}
-      <span>Language: </span>
-    {{/get}}
-		<b>{{=Name}}</b>
-	</div>
+        {{#get title}}
+            <span>Language: {{=Name}}</span>
+        {{/get}}
+    </div>
 </script>
 
 <div id="movieList"></div>
 
 <script type="text/javascript">
 
-	$.views.registerTags({
+    $.views.registerTags({
         "for": function(array) {
             // run e.g. {{set}}
-            if(this.content) {
+            if (this.content) {
                 $.render(array, this.content, this._view.ctx, this._view);
             }
-            this._view.ctx.customFunctions = this.content.customFunctions;
-            return $.render( array, this.tmpl, this._view.ctx, this._view);
+            return $.render(array, this.tmpl, this._view.ctx, this._view);
         },
         get: function(array) {
             var pathArray = this._path.split('.');
-            var path = pathArray[pathArray.length -1];
+            var path = pathArray[pathArray.length - 1];
             var customFunctions = this._view.ctx.customFunctions;
-            var customValue = null;
-            if(customFunctions && customFunctions[path]) {
-                var customObj = customFunctions[path];
-                return $.render(this._view.data, customObj);
+            if (customFunctions && customFunctions[path]) {
+                return $.render(this._view.data, customFunctions[path]);
             } else {
                 return $.render(this._view.data, this.tmpl);
             }
         },
         set: function(array) {
             var pathArray = this._path.split('.');
-            var path = pathArray[pathArray.length -1];
-            if(this._view.tmpl.customFunctions === undefined) {
-                this._view.tmpl.customFunctions = {};
+            var path = pathArray[pathArray.length - 1];
+            if (this._view.ctx.customFunctions === undefined) {
+                this._view.ctx.customFunctions = {};
             }
-            this._view.tmpl.customFunctions[path] = this.tmpl; // $.render(this._view.data, this.tmpl);
-            return "";
+            this._view.ctx.customFunctions[path] = this.tmpl;
+            return null;
         }
-	});
+    });
 
-	var movies = [
-		{
-			Title: "Meet Joe Black",
-			Languages: [
-				{ Name: "English" },
-				{ Name: "French" }
-			]
-		},
-		{
-			Title: "Eyes Wide Shut",
-			Languages: [
-				{ Name: "French" },
-				{ Name: "German" },
-				{ Name: "Spanish" }
-			]
-		}
-	];
+    var movies = [
+        {
+            Title: "Meet Joe Black",
+            Languages: [
+                { Name: "English" },
+                { Name: "French" }
+            ]
+        },
+        {
+            Title: "Eyes Wide Shut",
+            Languages: [
+                { Name: "French" },
+                { Name: "German" },
+                { Name: "Spanish" }
+            ]
+        }
+    ];
 
-	$.template( "movieTemplate", document.getElementById( "movieTemplate" ).innerHTML );
-    $.template( "languageTemplate", document.getElementById( "languageTemplate" ).innerHTML );
+    $.template("movieTemplate", document.getElementById("movieTemplate").innerHTML);
+    $.template("languageTemplate", document.getElementById("languageTemplate").innerHTML);
 
-	document.getElementById( "movieList" ).innerHTML =
-		"<table><tbody class='header'><tr><th>Title</th><th>For</th><th>For with body</th></tr></tbody><tbody>"
-		+ $.render( movies, "movieTemplate" )
-		+ "</tbody></table>"
+    document.getElementById("movieList").innerHTML =
+            "<table><tbody class='header'><tr><th>Title</th><th>For</th><th>For with body</th></tr></tbody><tbody>"
+                    + $.render(movies, "movieTemplate")
+                    + "</tbody></table>"
 </script>
 
 </body>
